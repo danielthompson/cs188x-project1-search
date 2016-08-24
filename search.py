@@ -93,7 +93,7 @@ def depthFirstSearch(problem):
 
     # fringe <- insert(make-node(initial-state[problem]), fringe)
     fringe = util.Stack()
-    fringe.push([problem.startState, []])
+    fringe.push([problem.getStartState(), []])
 
     while True:
         # if fringe is empty then return failure
@@ -101,11 +101,11 @@ def depthFirstSearch(problem):
             return None
 
         # node <- remove-front(fringe, strategy)
-        node, directions = fringe.pop()
+        node, actions = fringe.pop()
 
         # if goal-test(problem, state[node])
         if problem.isGoalState(node):
-            return directions
+            return actions
 
         # if state[node] is not in closed
         if node not in closed:
@@ -116,7 +116,7 @@ def depthFirstSearch(problem):
             for successor, action, stepCost in problem.getSuccessors(node):
                 # fringe <- insert(child-node, fringe)
 
-                fringe.push([successor, directions + [action]])
+                fringe.push([successor, actions + [action]])
 
 
     #util.raiseNotDefined()
@@ -124,7 +124,38 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # closed <- an empty set
+    closed = set()
+
+    # fringe <- insert(make-node(initial-state[problem]), fringe)
+    fringe = util.Queue()
+    fringe.push([problem.getStartState(), []])
+
+    while True:
+        # if fringe is empty then return failure
+        if fringe.isEmpty():
+            return None
+
+        # node <- remove-front(fringe, strategy)
+        node, actions = fringe.pop()
+
+        # if goal-test(problem, state[node])
+        if problem.isGoalState(node):
+            return actions
+
+        # if state[node] is not in closed
+        if node not in closed:
+            # add state[node] to closed
+            closed.add(node)
+
+            # for child-node in expand(state[node], problem)
+            for successor, action, stepCost in problem.getSuccessors(node):
+                # fringe <- insert(child-node, fringe)
+
+                fringe.push([successor, actions + [action]])
+
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
