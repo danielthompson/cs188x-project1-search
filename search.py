@@ -160,7 +160,37 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # closed <- an empty set
+    closed = set()
+
+    # fringe <- insert(make-node(initial-state[problem]), fringe)
+    fringe = util.PriorityQueue()
+    fringe.push([problem.getStartState(), []], 0)
+
+    while True:
+        # if fringe is empty then return failure
+        if fringe.isEmpty():
+            return None
+
+        # node <- remove-front(fringe, strategy)
+        node, actions = fringe.pop()
+
+        # if goal-test(problem, state[node])
+        if problem.isGoalState(node):
+            return actions
+
+        # if state[node] is not in closed
+        if node not in closed:
+            # add state[node] to closed
+            closed.add(node)
+
+            # for child-node in expand(state[node], problem)
+            for successor, action, stepCost in problem.getSuccessors(node):
+                # fringe <- insert(child-node, fringe)
+                fringe.push([successor, actions + [action]], stepCost)
+
+    #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
