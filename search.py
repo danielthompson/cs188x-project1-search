@@ -104,7 +104,7 @@ def depthFirstSearch(problem):
         node, directions = fringe.pop()
 
         # if goal-test(problem, state[node])
-        if node == problem.goal:
+        if problem.isGoalState(node):
             return directions
 
         # if state[node] is not in closed
