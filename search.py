@@ -166,7 +166,7 @@ def uniformCostSearch(problem):
 
     # fringe <- insert(make-node(initial-state[problem]), fringe)
     fringe = util.PriorityQueue()
-    fringe.push([problem.getStartState(), []], 0)
+    fringe.push([problem.getStartState(), [], 1], 0)
 
     while True:
         # if fringe is empty then return failure
@@ -174,7 +174,7 @@ def uniformCostSearch(problem):
             return None
 
         # node <- remove-front(fringe, strategy)
-        node, actions = fringe.pop()
+        node, actions, cost = fringe.pop()
 
         # if goal-test(problem, state[node])
         if problem.isGoalState(node):
@@ -187,8 +187,9 @@ def uniformCostSearch(problem):
 
             # for child-node in expand(state[node], problem)
             for successor, action, stepCost in problem.getSuccessors(node):
+                newCost = stepCost + cost
                 # fringe <- insert(child-node, fringe)
-                fringe.push([successor, actions + [action]], stepCost)
+                fringe.push([successor, actions + [action], newCost], newCost)
 
     #util.raiseNotDefined()
 
@@ -202,7 +203,40 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # closed <- an empty set
+    closed = set()
+
+    # fringe <- insert(make-node(initial-state[problem]), fringe)
+    fringe = util.PriorityQueue()
+    fringe.push([problem.getStartState(), [], 0], 0)
+
+    while True:
+        # if fringe is empty then return failure
+        if fringe.isEmpty():
+            return None
+
+        # node <- remove-front(fringe, strategy)
+        node, actions, cost = fringe.pop()
+
+        # if goal-test(problem, state[node])
+        if problem.isGoalState(node):
+            return actions
+
+        # if state[node] is not in closed
+        if node not in closed:
+            # add state[node] to closed
+            closed.add(node)
+
+            # for child-node in expand(state[node], problem)
+            for successor, action, stepCost in problem.getSuccessors(node):
+                # fringe <- insert(child-node, fringe)
+                g = cost + stepCost
+                h = heuristic(successor, problem)
+                f = g + h
+                fringe.push([successor, actions + [action], g], f)
+
+    #util.raiseNotDefined()
 
 
 # Abbreviations
