@@ -153,7 +153,7 @@ def breadthFirstSearch(problem):
             for successor, action, stepCost in problem.getSuccessors(node):
                 # fringe <- insert(child-node, fringe)
 
-                fringe.push([successor, actions + [action]])
+                fringe.push((successor, actions + [action]))
 
     #util.raiseNotDefined()
 
