@@ -591,7 +591,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        actions = self.searchFunction(problem)
+        actions = search.breadthFirstSearch(problem)
         return actions
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -634,7 +634,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 
         # find goal dot - shortest manhattan distance
 
-        if state in self.food.asList():
+        if (x, y) in self.food.asList():
             return True
         return False
 
