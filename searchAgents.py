@@ -506,8 +506,60 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+    posx, posy = position
+    foodList = foodGrid.asList()
+    numFoods = len(foodList)
     "*** YOUR CODE HERE ***"
-    return 0
+
+    heuristics = []
+
+    # # default heuristic - trivial - 16668 (1/4)
+    # return 0
+
+    # # number of remaining food pellets - 12517 (2/4)
+    # heuristics.append(len(foodList))
+
+    # max of manhattan distances to remaining food pellets - 9551 (3/4)
+    maxdist = 0
+    for foodx, foody in foodList:
+        distance = (abs(foodx - posx) + abs(foody - posy))
+        if distance > maxdist:
+            maxdist = distance
+    heuristics.append(maxdist)
+
+    # max of manhattan distances between all remaining food pellets - 12229 (2/4)
+    maxdist = 0
+    for food1 in foodList:
+        for food2 in foodList:
+            distance = (abs(food1[0] - food2[0]) + abs(food1[1] - food2[1]))
+            if distance > maxdist:
+                maxdist = distance
+    heuristics.append(maxdist)
+
+    # # half-perimeter of food bounding box - 11666 (3/4)
+    # maxX = 0
+    # maxY = 0
+    # minX = 1000000
+    # minY = 1000000
+    #
+    # for (x, y) in foodList:
+    #     if x < minX:
+    #         minX = x
+    #     if x > maxX:
+    #         maxX = x
+    #     if y < minY:
+    #         minY = y
+    #     if y > maxY:
+    #         maxY = y
+    #
+    # xDist = maxX - minX
+    # yDist = maxY - minY
+    #
+    # heuristics.append(xDist + yDist)
+
+    return max(heuristics)
+
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -535,10 +587,12 @@ class ClosestDotSearchAgent(SearchAgent):
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
         walls = gameState.getWalls()
+
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        actions = self.searchFunction(problem)
+        return actions
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -566,6 +620,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
 
+        # added
+        self.gameState = gameState
+
     def isGoalState(self, state):
         """
         The state is Pacman's position. Fill this in with a goal test that will
@@ -574,7 +631,39 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        # find goal dot - shortest manhattan distance
+
+        if state in self.food.asList():
+            return True
+        return False
+
+        #
+        # minDist = 1000000
+        # closestFood = ()
+        #
+        # # find the maze distance from the original start point to the closest food
+        #
+        # startx, starty = self.startState
+        #
+        # for food in self.food.asList():
+        #     foodx, foody = food
+        #     # distance = mazeDistance(self.startState, food, self.gameState)
+        #     distance = abs(startx - foodx) + abs(starty - foody)
+        #     if distance < minDist:
+        #         minDist = distance
+        #         closestFood = food
+        #
+        # if state == closestFood:
+        #     # find the maze distance from where i am now to the closest food
+        #     currentDistance = mazeDistance(state, closestFood, self.gameState)
+        #
+        #     if currentDistance <= minDist:
+        #         return True
+        #
+        # return False
+
+
 
 def mazeDistance(point1, point2, gameState):
     """
